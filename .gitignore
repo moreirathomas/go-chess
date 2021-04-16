@@ -1,0 +1,10 @@
+# Temporary files
+tmp/
+debug/
+
+# Build files
+bin/
+
+# Editor files
+.vscode/
+.prettierrc
