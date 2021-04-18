@@ -9,14 +9,22 @@ func _() {
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
 	_ = x[White-8]
+	_ = x[Black-16]
 }
 
-const _Color_name = "White"
+const _Color_name = "WhiteBlack"
 
-var _Color_index = [...]uint8{0, 5}
+var _Color_index = [...]uint8{0, 5, 10}
 
 func (i Color) String() string {
-	i -= 8
+	switch i {
+	case 8:
+		i = 0
+	case 16:
+		i = 1
+	default:
+		i = -1
+	}
 	if i < 0 || i >= Color(len(_Color_index)-1) {
 		return "Color(" + strconv.FormatInt(int64(i+8), 10) + ")"
 	}
