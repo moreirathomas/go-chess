@@ -2,17 +2,24 @@ package core
 
 import (
 	"fmt"
+
+	"github.com/moreirathomas/go-chess/lib"
 )
 
-type Square [64]int
-
 type Board struct {
-	Square
+	Square        [64]int // Represents the board's state through stored pieces present on each square as bitcode values.
+	SquaresToEdge [64][8]int
+	ColorToMove   Color
 }
 
-// filesNotation is a representation of the letter part of the squares' notation.
+// MoveOffsets represents the offsets needed to move to an adjacent square in any direction.
+//
+// The order is: north, south, east, west, north-west, south-east, north-east and south-west.
+var MoveOffsets = [8]int{8, -8, 1, -1, 7, -7, 9, -9}
+
+// fileNotation is a representation of the letter part of the squares' notation.
 // It is used for efficient slicing at the required index.
-var filesNotation = [8]string{"a", "b", "c", "d", "e", "f", "g", "h"}
+var fileNotation = [8]string{"a", "b", "c", "d", "e", "f", "g", "h"}
 
 // NewBoard returns an empty board.
 func NewBoard() Board {
@@ -25,7 +32,7 @@ func NewBoard() Board {
 //
 // For example, second file and third rank is "b3".
 func (b Board) SquareNotation(file, rank int) string {
-	return fmt.Sprintf("%s%d", filesNotation[file], rank)
+	return fmt.Sprintf("%s%d", fileNotation[file], rank)
 }
 
 // IsWhiteSquare returns whether or not a square is white given its file and rank.
@@ -53,6 +60,7 @@ func (b Board) Draw() {
 		for file := 0; file < 8; file++ {
 			p := NewPieceFromCode(b.Square[i])
 			fmt.Printf("[%2d:%s:%t:%s]", i, b.SquareNotation(file, rank), b.IsWhiteSquare(rank, file), p.Unicode())
+			// fmt.Printf("[%2d:%s]", i, p.Unicode())
 			i++
 		}
 		i -= 8
@@ -61,17 +69,54 @@ func (b Board) Draw() {
 	println()
 }
 
-// PieceToSquare moves the piece to the given square. Internally, the board stores the piece's
-// bitcode at the given index on the array representing the squares.
-func (b *Board) PieceToSquare(p Piece, i int) {
-	b.Square[i] = p.Bitcode
+// // PieceToSquare moves the piece to the given square.
+// func (b *Board) PieceToSquare(p Piece, i int) {
+// 	b.Square[i] = p.Bitcode
+// }
+
+// Move moves the piece occupying a given square to another.
+func (b *Board) Move(from, to int) int {
+	p := NewPieceFromCode(b.Square[from])
+	b.Square[from] = 0
+	b.Square[to] = p.Bitcode
+	return to
+}
+
+// PrecomputeMoveData computes and stores on the Board how far is each square from the edge
+// of the board. It is used for quick look-up when computing available moves.
+func (b *Board) PrecomputeMoveData() {
+	for file := 0; file < 8; file++ {
+		for rank := 0; rank < 8; rank++ {
+			// From rank 1 (index 0), there are 7 squares moving north before the edge.
+			// Respectively for the others directions.
+			// When moving diagonally, the number of squares to the edge is the minimum
+			// between the remaining squares moving vertically and horizontally.
+			north := 7 - rank
+			south := rank
+			east := 7 - file
+			west := file
+
+			i := rank*8 + file
+
+			b.SquaresToEdge[i] = [8]int{
+				north,
+				south,
+				east,
+				west,
+				lib.Min(north, west),
+				lib.Min(north, west),
+				lib.Min(north, west),
+				lib.Min(north, west),
+			}
+		}
+	}
 }
 
 // PlaceStartingPieces places the players pieces at their starting position on the board.
 func (b *Board) PlaceStartingPieces() {
-	place := func(p PieceSet, b *Board, i int) {
-		for _, v := range p {
-			b.PieceToSquare(*v, i)
+	place := func(set PieceSet, b *Board, i int) {
+		for _, p := range set {
+			b.Square[i] = p.Bitcode
 			i++
 		}
 	}

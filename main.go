@@ -9,4 +9,19 @@ func main() {
 
 	board.PlaceStartingPieces()
 	board.Draw()
+
+	i := 11
+
+	i = board.Move(i, i+8)
+	board.Draw()
+	i = board.Move(i, i+8)
+	board.Draw()
+	i = board.Move(i, i+1)
+	board.Draw()
+	i = board.Move(i, i-1)
+	board.Draw()
+	_ = board.Move(i, i-8)
+	board.Draw()
+
+	println(core.NewPieceFromCode(board.Square[63]).Name())
 }

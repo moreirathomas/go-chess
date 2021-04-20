@@ -74,6 +74,11 @@ func (p Piece) Unicode() string {
 	return fmt.Sprintf("%1s", unicodes[p.Bitcode])
 }
 
+// IsColor returns whether or not a piece is a given color.
+func (p Piece) IsColor(c Color) bool {
+	return p.Color == c
+}
+
 // NewPieceSet returns a set of the 16 starting pieces for a given color.
 // The pieces a ordered as their starting position on the board would be.
 func NewPieceSet(c Color) PieceSet {
