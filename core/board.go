@@ -10,9 +10,9 @@ type Board struct {
 	Square
 }
 
-// files is a representation of the letter part of the squares' notation.
+// filesNotation is a representation of the letter part of the squares' notation.
 // It is used for efficient slicing at the required index.
-const files = "abcdefgh"
+var filesNotation = [8]string{"a", "b", "c", "d", "e", "f", "g", "h"}
 
 // NewBoard returns an empty board.
 func NewBoard() Board {
@@ -24,12 +24,12 @@ func NewBoard() Board {
 // SquareNotation returns the algebraic notation of a square given its file and rank.
 //
 // For example, second file and third rank is "b3".
-func (b Board) SquareNotation(file int, rank int) string {
-	return fmt.Sprintf("%s%d", files[file-1:file], rank)
+func (b Board) SquareNotation(file, rank int) string {
+	return fmt.Sprintf("%s%d", filesNotation[file], rank)
 }
 
 // IsWhiteSquare returns whether or not a square is white given its file and rank.
-func (b Board) IsWhiteSquare(file int, rank int) bool {
+func (b Board) IsWhiteSquare(file, rank int) bool {
 	return (file+rank)%2 == 0
 }
 
@@ -48,9 +48,9 @@ func (b Board) Draw() {
 	//    a   b   c   d   e   f   g   h
 
 	i := 64
-	for file := 8; file > 0; file-- {
+	for rank := 8; rank > 0; rank-- {
 		i -= 8
-		for rank := 8; rank > 0; rank-- {
+		for file := 0; file < 8; file++ {
 			p := NewPieceFromCode(b.Square[i])
 			fmt.Printf("[%2d:%s:%t:%s]", i, b.SquareNotation(file, rank), b.IsWhiteSquare(rank, file), p.Unicode())
 			i++
