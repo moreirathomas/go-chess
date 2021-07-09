@@ -1,4 +1,4 @@
-package core
+package chess
 
 var (
 	friendlyColor Color

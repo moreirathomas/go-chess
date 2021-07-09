@@ -1,4 +1,4 @@
-package core
+package chess
 
 type Move struct {
 	StartSquare  int

@@ -1,4 +1,4 @@
-package lib
+package num
 
 // Min returns the minimun between two intergers.
 func Min(a, b int) int {

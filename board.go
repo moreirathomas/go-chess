@@ -1,9 +1,9 @@
-package core
+package chess
 
 import (
 	"fmt"
 
-	"github.com/moreirathomas/go-chess/lib"
+	"github.com/moreirathomas/go-chess/pkg/num"
 )
 
 type Board struct {
@@ -103,10 +103,10 @@ func (b *Board) PrecomputeMoveData() {
 				south,
 				east,
 				west,
-				lib.Min(north, west),
-				lib.Min(north, west),
-				lib.Min(north, west),
-				lib.Min(north, west),
+				num.Min(north, west),
+				num.Min(north, west),
+				num.Min(north, west),
+				num.Min(north, west),
 			}
 		}
 	}

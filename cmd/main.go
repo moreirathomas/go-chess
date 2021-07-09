@@ -1,11 +1,11 @@
 package main
 
-import "github.com/moreirathomas/go-chess/core"
+import "github.com/moreirathomas/go-chess"
 
 func main() {
 	println("\nWelcome to cli-chess\n")
 
-	board := core.NewBoard()
+	board := chess.NewBoard()
 
 	board.PlaceStartingPieces()
 	board.Draw()
@@ -23,5 +23,5 @@ func main() {
 	_ = board.Move(i, i-8)
 	board.Draw()
 
-	println(core.NewPieceFromCode(board.Square[63]).Name())
+	println(chess.NewPieceFromCode(board.Square[63]).Name())
 }
