@@ -5,7 +5,12 @@ type Move struct {
 	TargetSquare int
 }
 
-func (b Board) NewMoves() []Move {
+// MoveOffsets represents the offsets needed to move to an adjacent square in any direction.
+//
+// The order is: north, south, east, west, north-west, south-east, north-east and south-west.
+var MoveOffsets = [8]int{8, -8, 1, -1, 7, -7, 9, -9}
+
+func (b Board) GenerateMoves() []Move {
 	moves := []Move{}
 
 	for i, bitcode := range b.Square {
